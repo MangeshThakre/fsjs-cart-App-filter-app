@@ -4,99 +4,101 @@ const tBody = document.querySelector("#tBody");
 const cartProduct = JSON.parse(localStorage.getItem("Cart"));
 
 function initialLoad() {
-    if (cartProduct.length == 0) cart.innerHTML = emptyCart();
-    else displayCart();
+  console.log(cartProduct);
+  if (!cartProduct || cartProduct.length == 0) {
+    cart.innerHTML = emptyCart();
+  } else displayCart();
 }
 
 initialLoad();
 
 /// display
 function emptyCart() {
-    return ` <div class="text-center font-bold text-5xl text-gray-400">
+  return ` <div class="text-center font-bold text-5xl text-gray-400">
     Empty Cart
     </div>`;
 }
 // display cart product
 function displayCart() {
-    cartProduct.forEach((product, index) => {
-        const tr = document.createElement("tr");
-        tr.id = product.id;
-        tr.className = ` ${
+  cartProduct.forEach((product, index) => {
+    const tr = document.createElement("tr");
+    tr.id = product.id;
+    tr.className = ` ${
       index % 2 ? "bg-[#fcf7b9]" : "bg-[#fefad2]"
     }  dark:border-gray-700`;
-        tr.innerHTML = cartProducts(
-            product.images[0],
-            product.title,
-            product.description,
-            product.itemCount,
-            product.price,
-            product.id
-        );
+    tr.innerHTML = cartProducts(
+      product.images[0],
+      product.title,
+      product.description,
+      product.itemCount,
+      product.price,
+      product.id
+    );
 
-        tBody.appendChild(tr);
-    });
+    tBody.appendChild(tr);
+  });
 }
 
 ///////////////////handle remove
 function handleRemove(productId) {
-    for (const product of tBody.children) {
-        if (tBody.children.length == 1) cart.innerHTML = emptyCart();
-        if (product.id == productId) product.style.display = "none";
-    }
+  for (const product of tBody.children) {
+    if (tBody.children.length == 1) cart.innerHTML = emptyCart();
+    if (product.id == productId) product.style.display = "none";
+  }
 
-    cartProduct.forEach((e, i) => {
-        if (e.id == productId) {
-            cartProduct.splice(i, 1);
-            localStorage.setItem("Cart", JSON.stringify(cartProduct));
-        }
-    });
+  cartProduct.forEach((e, i) => {
+    if (e.id == productId) {
+      cartProduct.splice(i, 1);
+      localStorage.setItem("Cart", JSON.stringify(cartProduct));
+    }
+  });
 }
 
 function handleInc(productId, tbodyEle) {
-    let price = 0;
-    let count = 1;
-    cartProduct.forEach((e, i) => {
-        if (e.id == productId) {
-            count = e.itemCount + 1;
-            price = e.price * (e.itemCount + 1);
-            cartProduct[i].itemCount = e.itemCount + 1;
-        }
-    });
-
-    for (const product of tbodyEle.children) {
-        if (product.id == "counter")
-            product.firstElementChild.children[1].textContent = count;
-        if (product.id == "price")
-            product.firstElementChild.textContent = "Rs " + price;
+  let price = 0;
+  let count = 1;
+  cartProduct.forEach((e, i) => {
+    if (e.id == productId) {
+      count = e.itemCount + 1;
+      price = e.price * (e.itemCount + 1);
+      cartProduct[i].itemCount = e.itemCount + 1;
     }
-    localStorage.setItem("Cart", JSON.stringify(cartProduct));
+  });
+
+  for (const product of tbodyEle.children) {
+    if (product.id == "counter")
+      product.firstElementChild.children[1].textContent = count;
+    if (product.id == "price")
+      product.firstElementChild.textContent = "Rs " + price;
+  }
+  localStorage.setItem("Cart", JSON.stringify(cartProduct));
 }
 
 function handleDec(productId, tbodyEle) {
-    let price = 0;
-    let count = 0;
-    cartProduct.forEach((e, i) => {
-        if (e.id == productId && e.itemCount >= 1) {
-            count = e.itemCount == 1 ? e.itemCount : e.itemCount - 1;
-            price = e.itemCount == 1 ? e.price : e.itemCount * e.price - e.price;
-            cartProduct[i].itemCount =
-                e.itemCount > 1 ? e.itemCount - 1 : e.itemCount;
-        }
-    });
-
-    for (const product of tbodyEle.children) {
-        if (product.id == "counter")
-            product.firstElementChild.children[1].textContent = count;
-        if (product.id == "price")
-            product.firstElementChild.textContent = "Rs " + price;
+  let price = 0;
+  let count = 0;
+  cartProduct.forEach((e, i) => {
+    if (e.id == productId && e.itemCount >= 1) {
+      count = e.itemCount == 1 ? e.itemCount : e.itemCount - 1;
+      price = e.itemCount == 1 ? e.price : e.itemCount * e.price - e.price;
+      cartProduct[i].itemCount =
+        e.itemCount > 1 ? e.itemCount - 1 : e.itemCount;
     }
-    localStorage.setItem("Cart", JSON.stringify(cartProduct));
+  });
+
+  for (const product of tbodyEle.children) {
+    if (product.id == "counter")
+      product.firstElementChild.children[1].textContent = count;
+    if (product.id == "price")
+      product.firstElementChild.textContent = "Rs " + price;
+  }
+  localStorage.setItem("Cart", JSON.stringify(cartProduct));
 }
 
 /// table
 
 function cartProducts(image, title, description, itemCount, price, id) {
-    return `
+  return `
   <th
   scope="row"
   class="py-4 px-6 font-medium text-black whitespace-nowrap dark:text-white"
