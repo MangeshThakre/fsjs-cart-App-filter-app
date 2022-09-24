@@ -19,6 +19,10 @@ function initialLoad() {
   if (cartProduct) cartNo.textContent = cartProduct.length;
   categorys();
   FetchProducts();
+
+  //  set filter max price and min price to "" every
+  const filterMaxMin = document.querySelectorAll(".filterInput");
+  filterMaxMin.forEach((e) => (e.value = ""));
 }
 
 initialLoad();
